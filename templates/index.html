@@ -1,0 +1,181 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLSA Calculator</title>
+    <style>
+        body {
+            background: #fff;
+            color: #222;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #222;
+            color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            padding: 32px 24px;
+        }
+        h1 {
+            color: #ff69b4;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        label, select, input {
+            color: #222;
+        }
+        .form-section {
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            padding: 16px;
+        }
+        .form-section h3 {
+            color: #ff69b4;
+            margin-top: 0;
+        }
+        .add-btn {
+            background: #ff69b4;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+        .add-btn:hover {
+            background: #d81b60;
+        }
+        .result-section {
+            background: #333;
+            color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        .result-section h2 {
+            color: #ff69b4;
+        }
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .input-row label {
+            flex: 1;
+        }
+        .input-row input {
+            flex: 1;
+        }
+    </style>
+    <script>
+        function showFields() {
+            var caseType = document.getElementById('case').value;
+            document.getElementById('regular_fields').style.display = caseType === 'regular' ? 'block' : 'none';
+            document.getElementById('shift_fields').style.display = caseType === 'shift' ? 'block' : 'none';
+            document.getElementById('alternate_fields').style.display = caseType === 'alternate' ? 'block' : 'none';
+        }
+        function addShiftRow() {
+            var container = document.getElementById('shift_rows');
+            var idx = container.children.length + 1;
+            var row = document.createElement('div');
+            row.className = 'input-row';
+            row.innerHTML = `<label>Shift Rate ${idx}: <input type="number" step="any" name="shift_rate_${idx}"></label><label>Hours Worked ${idx}: <input type="number" step="any" name="shift_hours_${idx}"></label>`;
+            container.appendChild(row);
+        }
+        function addAltRow() {
+            var container = document.getElementById('alt_rows');
+            var idx = container.children.length + 1;
+            var row = document.createElement('div');
+            row.className = 'input-row';
+            row.innerHTML = `<label>OT Alt Rate ${idx}: <input type="number" step="any" name="alt_rate_${idx}"></label><label>Hours Worked ${idx}: <input type="number" step="any" name="alt_hours_${idx}"></label>`;
+            container.appendChild(row);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>FLSA Calculator Web App</h1>
+        <form method="post">
+            <label for="case">Select Calculation Case:</label>
+            <select name="case" id="case" onchange="showFields()">
+                <option value="regular">Regular Case</option>
+                <option value="shift">Shift Differential Case</option>
+                <option value="alternate">Alternate Rates Case</option>
+            </select>
+            <br><br>
+            <label for="payperiod">Pay Period:</label>
+            <select name="payperiod" id="payperiod">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Biweekly</option>
+                <option value="semi-monthly">Semi-Monthly</option>
+            </select>
+            <br><br>
+            <div id="regular_fields" class="form-section">
+                <h3>Regular Case Inputs</h3>
+                <div class="input-row">
+                    <label>Total Regular Hours: <input type="number" step="any" name="total_reg_hours"></label>
+                    <label>Total OT Hours: <input type="number" step="any" name="total_ot_hours"></label>
+                </div>
+                <div class="input-row">
+                    <label>Total Worked Hours: <input type="number" step="any" name="total_worked_hours"></label>
+                    <label>Base Hourly Rate: <input type="number" step="any" name="base_hourly_rate"></label>
+                </div>
+            </div>
+            <div id="shift_fields" class="form-section" style="display:none;">
+                <h3>Shift Differential Inputs</h3>
+                <div id="shift_rows">
+                    <div class="input-row">
+                        <label>Shift Rate 1: <input type="number" step="any" name="shift_rate_1"></label>
+                        <label>Hours Worked 1: <input type="number" step="any" name="shift_hours_1"></label>
+                    </div>
+                    <div class="input-row">
+                        <label>Shift Rate 2: <input type="number" step="any" name="shift_rate_2"></label>
+                        <label>Hours Worked 2: <input type="number" step="any" name="shift_hours_2"></label>
+                    </div>
+                </div>
+                <button type="button" class="add-btn" onclick="addShiftRow()">Add Shift Rate</button>
+            </div>
+            <div id="alternate_fields" class="form-section" style="display:none;">
+                <h3>Alternate Rates Inputs</h3>
+                <div class="input-row">
+                    <label>Total Regular Hours: <input type="number" step="any" name="alt_total_reg_hours"></label>
+                    <label>Base Hourly Rate: <input type="number" step="any" name="alt_base_hourly_rate"></label>
+                </div>
+                <div id="alt_rows">
+                    <div class="input-row">
+                        <label>OT Alt Rate 1: <input type="number" step="any" name="alt_rate_1"></label>
+                        <label>Hours Worked 1: <input type="number" step="any" name="alt_hours_1"></label>
+                    </div>
+                    <div class="input-row">
+                        <label>OT Alt Rate 2: <input type="number" step="any" name="alt_rate_2"></label>
+                        <label>Hours Worked 2: <input type="number" step="any" name="alt_hours_2"></label>
+                    </div>
+                </div>
+                <button type="button" class="add-btn" onclick="addAltRow()">Add OT Alt Rate</button>
+            </div>
+            <br>
+            <button type="submit" class="add-btn">Calculate</button>
+        </form>
+        <br>
+        {% if result %}
+        <div class="result-section">
+            <h2>Results:</h2>
+            <ul>
+            {% for key, value in result.items() %}
+                <li>{{ key }}: {{ value }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    <script>showFields();</script>
+</body>
+</html>

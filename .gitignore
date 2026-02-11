@@ -1,0 +1,18 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+.DS_Store
+.idea/
+.vscode/
+
+# OS generated files
+Thumbs.db
+*.swp
+*.swo
+
+# PythonAnywhere
+local_settings.py
