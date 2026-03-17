@@ -1,11 +1,35 @@
-class Payperiod:
-    def __init__(self, is_weekly:bool, is_biweekly:bool, is_semi_monthly:bool):
-        if is_weekly:
-            self.period = "weekly"
-            self.threshold_hours = 40
-        if is_biweekly:
-            self.period = "biweekly"
-            self.threshold_hours = 80
-        if is_semi_monthly:
-            self.period = "semi-monthly"
-            self.threshold_hours = 86.67
+from __future__ import annotations
+from typing import List
+
+
+class PayPeriod:
+
+    frequencies: List[str] = [
+        "weekly",
+        "biweekly",
+        "semimonthly",
+        "monthly",
+        "quarterly",
+        "annually",
+    ]
+
+    def __init__(self, frequency: str | None) -> None:
+        if frequency is None:
+            raise TypeError("Frequency cannot be None type")
+        if frequency not in self.frequencies:
+            raise ValueError("Invalid frequency type")
+        self.frequency: str = frequency
+        self.threshold: float | None = None
+        match frequency:
+            case "weekly":
+                self.threshold = 40.00
+            case "biweekly":
+                self.threshold = 80.00
+            case "semimonthly":
+                self.threshold = 86.67
+            case "monthly":
+                self.threshold = 173.33
+            case "quarterly":
+                self.threshold = 520.00
+            case "annually":
+                self.threshold = 2080.00
