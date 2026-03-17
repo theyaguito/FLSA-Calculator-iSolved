@@ -79,6 +79,20 @@
             padding: 16px;
             margin-top: 24px;
         }
+        .toggle-btn {
+            margin-left: 8px;
+            background: #22d4fd;
+            color: #222;
+            border: none;
+            border-radius: 6px;
+            padding: 2px 10px;
+            font-size: .95em;
+            cursor: pointer;
+        }
+        .toggle-btn:hover {
+            background: #1769aa;
+            color: #fff;
+        }
     </style>
     <script>
         function showFields() {
@@ -178,7 +192,12 @@
             <h2>Results:</h2>
             <ul>
             {% for key, value in result.items() %}
-                <li>{{ key }}: {{ value }}</li>
+                <li>
+                  <strong>{{ key }}:</strong>
+                  <span class="rounded-value">{{ value }}</span>
+                  <span class="extended-value" style="display:none;">{{ extended_result[key] }}</span>
+                  <button type="button" class="toggle-btn" onclick="toggleValue(this)">Show full value</button>
+                </li>
             {% endfor %}
             </ul>
         </div>
@@ -191,5 +210,20 @@
         {% endif %}
     </div>
     <script>showFields();</script>
+    <script>
+    function toggleValue(button) {
+        const rounded = button.parentElement.querySelector('.rounded-value');
+        const extended = button.parentElement.querySelector('.extended-value');
+        if (rounded.style.display !== "none") {
+            rounded.style.display = "none";
+            extended.style.display = "";
+            button.textContent = "Show rounded value";
+        } else {
+            rounded.style.display = "";
+            extended.style.display = "none";
+            button.textContent = "Show full value";
+        }
+    }
+    </script>
 </body>
 </html>

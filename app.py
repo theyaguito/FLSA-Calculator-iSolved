@@ -5,9 +5,23 @@ from payperiod import PayPeriod
 app = Flask(__name__)
 
 
+def round_result_dict(result_dict):
+    rounded = {}
+    extended = {}
+    for k, v in result_dict.items():
+        try:
+            rounded[k] = f"{float(v):.2f}"
+            extended[k] = str(v)
+        except Exception:
+            rounded[k] = v
+            extended[k] = v
+    return rounded, extended
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
-    result = None
+    rounded_result = None
+    extended_result = None
     error = None
 
     if request.method == "POST":
@@ -19,7 +33,9 @@ def index():
             payperiod = PayPeriod(payperiod_type)
         except Exception as e:
             error = str(e)
-            return render_template("index.html", result=None, error=error)
+            return render_template(
+                "index.html", result=None, extended_result=None, error=error
+            )
 
         if case == "regular":
             total_reg_hours = float(request.form.get("total_reg_hours", 0))
@@ -38,6 +54,7 @@ def index():
                 "Overtime Premium": flsa_instance.calc_ot_premium(),
                 "Total Overtime Pay": flsa_instance.calc_total_ot_pay(),
             }
+            rounded_result, extended_result = round_result_dict(result)
 
         elif case == "shift":
             shift_differentials = []
@@ -55,6 +72,7 @@ def index():
                 "Overtime Premium": flsa_instance.calc_ot_premium_shift_differential(),
                 "Total Overtime Pay": flsa_instance.calc_total_ot_pay_shift_differential(),
             }
+            rounded_result, extended_result = round_result_dict(result)
 
         elif case == "alternate":
             total_reg_hours = float(request.form.get("alt_total_reg_hours", 0))
@@ -76,8 +94,14 @@ def index():
                 "Overtime Premium": flsa_instance.calc_ot_premium_alternate_rates(),
                 "Total Overtime Pay": flsa_instance.calc_total_ot_pay_alternate_rates(),
             }
+            rounded_result, extended_result = round_result_dict(result)
 
-    return render_template("index.html", result=result, error=error)
+    return render_template(
+        "index.html",
+        result=rounded_result,
+        extended_result=extended_result,
+        error=error,
+    )
 
 
 if __name__ == "__main__":
